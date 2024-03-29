@@ -16,9 +16,9 @@ app.use(express.json());
 app.use(cors())
 
 // Connect to MongoDB
-mongoose.connect('mongodb+srv://chandru-clt:chandruclt@chandru-clt.ildrbug.mongodb.net')
-    // .then(() => console.log('Database connected'))
-    // .catch(err => console.error('Error connecting to database:', err));
+// mongoose.connect('mongodb+srv://chandru-clt:chandruclt@chandru-clt.ildrbug.mongodb.net')
+//     .then(() => console.log('Database connected'))
+//     .catch(err => console.error('Error connecting to database:', err));
 
 // Routes
 app.use('/api', userRoutes); //company signup
