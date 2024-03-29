@@ -13,7 +13,7 @@ const createProject = async (req, res) => {
             organisationName: req.body.organisationName,
             projectName: req.body.projectName,
         });
-
+        console.log(newProject);
         await newProject.save();
 
         // Close the connection after saving the user

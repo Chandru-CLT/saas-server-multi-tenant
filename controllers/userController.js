@@ -4,7 +4,16 @@ const domainModel = require('../models/subdomineModel')
 
 const createUser = async (req, res) => {
     const organization = req.body.organisationName;
-    let formattedDbName = organization.toLowerCase().replace(/&/g, "and").replace(/ /g, "-").split("").filter(char => char !== "/").join("");
+    const formattedDbName = organization
+        .toLowerCase()
+        .replace(/&/g, "and")
+        .replace(/ /g, "-")
+        .replace(/[^a-zA-Z0-9_]/g, "") // Only allow alphanumeric characters and underscores
+        .split("")
+        .filter((char) => char !== "/")
+        .join("");
+        console.log(formattedDbName);
+        console.log(connectToDatabase(formattedDbName));
     const db = connectToDatabase(formattedDbName);
 
     try {

@@ -18,6 +18,8 @@ const createTask = async (req, res) => {
             assignedToId: req.body.assignedToId,
         });
 
+        console.log(newTask);
+
         await newTask.save();
 
         // Close the connection after saving the user
