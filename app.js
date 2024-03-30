@@ -7,7 +7,7 @@ const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRouter');
 const projectRoutes = require('./routes/projectRoutes');
 const taskRoutes = require('./routes/taskRoutes');
-const checkSubdomainAvailability = require('./middleware/checkDomain');
+// const checkSubdomainAvailability = require('./middleware/checkDomain');
 
 const app = express();
 const PORT = 1997;

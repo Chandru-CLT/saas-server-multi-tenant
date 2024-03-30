@@ -4,9 +4,13 @@ const projectModel = require('../models/projectModel');
 
 const createProject = async (req, res) => {
     const { organisationName } = req.body;
-    const db = await connectToDatabase(organisationName);
+    console.log("createProject api called");
+
 
     try {
+        const db = await connectToDatabase(organisationName);
+        console.log("connected to tenant DB to add projects");
+
         const Project = db.model('projects', projectModel.schema);
 
         const newProject = new Project({
@@ -14,10 +18,12 @@ const createProject = async (req, res) => {
             projectName: req.body.projectName,
         });
         console.log(newProject);
+        
         await newProject.save();
 
         // Close the connection after saving the user
-        db.close();
+        console.log("data saved successfully");
+        // db.close();
 
         res.status(201).json({
             message: 'Project added successfully',
@@ -31,19 +37,19 @@ const createProject = async (req, res) => {
 
 const getProjectList = async (req, res) => {
     const { subDomine } = req.params;
-
+    console.log("getProjectList api called");
     try {
         const db = connectToDatabase(subDomine);
-
+        console.log("connected to tenant DB to fetch projects");
         const User = db.model('projects', projectModel.schema);
         const projectList = await User.find();
 
         // .select('_id name');
 
-        db.close();
+        // db.close();
 
         res.status(200).json(projectList);
-
+        console.log("Data sent successfully");
     } catch (error) {
         console.log(error);
     }

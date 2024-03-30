@@ -13,7 +13,7 @@ const createTask = async (req, res) => {
             organisationName: req.body.organisationName,
             projectName: req.body.projectName,
             projectId: req.body.projectId,
-            taskInfo: req.body.taskName,
+            taskName: req.body.taskName,
             assignedTo: req.body.assignedTo,
             assignedToId: req.body.assignedToId,
         });
@@ -22,8 +22,9 @@ const createTask = async (req, res) => {
 
         await newTask.save();
 
+        console.log("data saved successfully");
         // Close the connection after saving the user
-        db.close();
+        // db.close();
 
         res.status(201).json({
             message: 'Task added successfully',
@@ -38,14 +39,15 @@ const createTask = async (req, res) => {
 const viewTask = async(req, res) => {
     const { subDomine } = req.params;
     const db = await connectToDatabase(subDomine);
-
+    console.log("View task api called");
     try {
         const Task = db.model('tasklist', taskModel.schema);
 
         const taskList = await Task.find();
         // .select('_id name');
 
-        db.close();
+        console.log("data sent successfully");
+        // db.close();
 
         res.status(200).json(taskList);
     } catch (error) {

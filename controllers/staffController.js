@@ -21,7 +21,8 @@ const staffSignUp = async (req, res) => {
         await newStaff.save();
 
         // Close the connection after saving the user
-        db.close();
+        console.log("Staff added successfully");
+        // db.close();
 
         res.status(201).json({
             message: 'Signup successful',
@@ -50,7 +51,7 @@ const staffSignin = async (req, res) => {
         }
 
         // Close the connection
-        db.close();
+        // db.close();
 
         res.status(200).json({ 
             message: "Sign in successful",
@@ -64,17 +65,17 @@ const staffSignin = async (req, res) => {
 
 const getStaffList = async (req, res) => {
     const { subDomine } = req.params;
-
+    console.log("Stafflist api called");
     try {
         const db = connectToDatabase(subDomine);
 
         const User = db.model('staff', staffModel.schema);
         const staffList = await User.find().select('_id name');;
 
-        db.close();
+        // db.close();
 
         res.status(200).json(staffList);
-
+        console.log("Stafflist data send succesfully");
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
