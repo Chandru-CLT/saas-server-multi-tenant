@@ -3,6 +3,7 @@ const UserModel = require('../models/userModel');
 const domainModel = require('../models/subdomineModel')
 
 const createUser = async (req, res) => {
+    console.log("New company created");
     const organization = req.body.organisationName;
     const formattedDbName = organization
         .toLowerCase()
@@ -12,9 +13,11 @@ const createUser = async (req, res) => {
         .split("")
         .filter((char) => char !== "/")
         .join("");
-        console.log(formattedDbName);
-        console.log(connectToDatabase(formattedDbName));
+        // console.log(formattedDbName);
+        // console.log(connectToDatabase(formattedDbName));
+        console.log("Creating the new DB");
     const db = connectToDatabase(formattedDbName);
+    console.log("Created the new DB and connected");
 
     try {
         // Create a new collection for users
@@ -34,7 +37,7 @@ const createUser = async (req, res) => {
 
         // // Close the connection after saving the user
         // db.close();
-
+        console.log("Company registered and saved successfully");
         // Now, create a new domain
         const domainDb = connectToDatabase('odonine-tenant');
         const domain = domainDb.model('odonine-tenant', domainModel.schema);
@@ -52,7 +55,7 @@ const createUser = async (req, res) => {
         console.log(newDomain);
 
         await newDomain.save();
-        domainDb.close();
+        // domainDb.close();
 
         res.status(201).json(newUser);
     } catch (err) {
@@ -67,7 +70,7 @@ const createUser = async (req, res) => {
 
 const companySignIn = async (req, res) => {
     const { email, password, subDomine } = req.body;
-
+    
     try {
         const db = connectToDatabase("odonine-tenant");
 
