@@ -1,6 +1,8 @@
 const { connectToDatabase } = require('../utils/database');
 const UserModel = require('../models/userModel');
 const domainModel = require('../models/subdomineModel')
+const jwt = require('jsonwebtoken')
+
 
 const createUser = async (req, res) => {
     console.log("New company created");
@@ -57,7 +59,15 @@ const createUser = async (req, res) => {
         await newDomain.save();
         // domainDb.close();
 
+        const accessToken = jwt.sign({ email: email, role: "admin" }, "jwt-access-token-secret-key", { expiresIn: "1m" });
+        const refreshToken = jwt.sign({ email: email, role: "admin" }, "jwt-refresh-token-secret-key", { expiresIn: "5m" });
+
+        res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 60 * 1000 }); // Expires in 1 minute
+        res.cookie('refresh_token', refreshToken, 
+            { httpOnly: true, maxAge: 300 * 1000, httpOnly: true, secure: true, sameSite:'strict' }); // Expires in 5 minutes
+        res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
         res.status(201).json(newUser);
+
     } catch (err) {
         if (err.code === 11000 && err.keyPattern.subDomine) {
             // res.status(400).json({ message: `The subDomine '${formattedDbName}' is already in use.` });
