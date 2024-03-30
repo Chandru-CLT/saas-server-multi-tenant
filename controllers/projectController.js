@@ -21,7 +21,6 @@ const createProject = async (req, res) => {
         
         await newProject.save();
 
-        // Close the connection after saving the user
         console.log("data saved successfully");
         // db.close();
 
@@ -43,10 +42,6 @@ const getProjectList = async (req, res) => {
         console.log("connected to tenant DB to fetch projects");
         const User = db.model('projects', projectModel.schema);
         const projectList = await User.find();
-
-        // .select('_id name');
-
-        // db.close();
 
         res.status(200).json(projectList);
         console.log("Data sent successfully");
