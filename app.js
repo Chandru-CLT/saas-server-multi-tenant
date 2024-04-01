@@ -4,6 +4,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors())
+
 // Router imports
 const userRoutes = require('./routes/userRoutes');
 const staffRoutes = require('./routes/staffRouter');
