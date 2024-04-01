@@ -37,7 +37,7 @@ const createTask = async (req, res) => {
 }
 
 const viewTask = async(req, res) => {
-    const { subDomine } = req.params;
+    const { subDomine, staffId } = req.params;
     const db = await connectToDatabase(subDomine);
     console.log("View task api called");
     try {
@@ -51,9 +51,30 @@ const viewTask = async(req, res) => {
 
         res.status(200).json(taskList);
     } catch (error) {
-        
+        console.log(error);
+        res.status(500).json(error)
     }
 
 }
 
-module.exports = { createTask, viewTask };
+const viewStaffTask = async(req, res) => {
+    const { subDomine, staffId } = req.params;
+    const db = await connectToDatabase(subDomine);
+    console.log("View task api called");
+    try {
+        const Task = db.model('tasklist', taskModel.schema);
+
+        const taskList = await Task.find({ assignedToId: staffId }).select({ projectName: 1, taskName: 1, assignedTo: 1 });
+        const arrData = [...taskList]; // Spread taskList into a new array
+
+        console.log("data sent successfully");
+        // db.close();
+
+        res.status(200).json(arrData);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json(error)
+    }
+}
+
+module.exports = { createTask, viewTask, viewStaffTask };
