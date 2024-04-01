@@ -6,7 +6,6 @@ const createProject = async (req, res) => {
     const { organisationName } = req.body;
     console.log("createProject api called");
 
-
     try {
         const db = await connectToDatabase(organisationName);
         console.log("connected to tenant DB to add projects");

@@ -5,22 +5,22 @@ const jwt = require('jsonwebtoken')
 
 
 const createUser = async (req, res) => {
-    console.log("New company created");
+    console.log("New company creating");
     const organization = req.body.organisationName;
     const formattedDbName = organization
-        .toLowerCase()
-        .replace(/&/g, "and")
-        .replace(/ /g, "-")
-        .replace(/[^a-zA-Z0-9_]/g, "") // Only allow alphanumeric characters and underscores
-        .split("")
-        .filter((char) => char !== "/")
-        .join("");
-        // console.log(formattedDbName);
-        // console.log(connectToDatabase(formattedDbName));
-        console.log("Creating the new DB");
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/ /g, "-") // Replace spaces with dashes
+    .replace(/[^a-zA-Z0-9_-]/g, "") // Only allow alphanumeric characters and underscores
+    .split("")
+    .filter((char) => char !== "/")
+    .join("");
+    console.log(formattedDbName);
+    console.log(connectToDatabase(formattedDbName));
+    console.log("Creating the new DB", formattedDbName);
+
     const db = connectToDatabase(formattedDbName);
     console.log("Created the new DB and connected");
-
     try {
         // Create a new collection for users
         const User = db.model('Admin', UserModel.schema);
@@ -35,7 +35,7 @@ const createUser = async (req, res) => {
             subDomine: formattedDbName
         });
 
-        await newUser.save();
+        await newUser.save({ timeout: 20000 });
 
         // // Close the connection after saving the user
         // db.close();
@@ -56,16 +56,16 @@ const createUser = async (req, res) => {
 
         console.log(newDomain);
 
-        await newDomain.save();
+        await newDomain.save({ timeout: 20000 });
         // domainDb.close();
 
-        const accessToken = jwt.sign({ email: email, role: "admin" }, "jwt-access-token-secret-key", { expiresIn: "1m" });
-        const refreshToken = jwt.sign({ email: email, role: "admin" }, "jwt-refresh-token-secret-key", { expiresIn: "5m" });
+        // const accessToken = jwt.sign({ email: email, role: "admin" }, "jwt-access-token-secret-key", { expiresIn: "1m" });
+        // const refreshToken = jwt.sign({ email: email, role: "admin" }, "jwt-refresh-token-secret-key", { expiresIn: "5m" });
 
-        res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 60 * 1000 }); // Expires in 1 minute
-        res.cookie('refresh_token', refreshToken, 
-            { httpOnly: true, maxAge: 300 * 1000, httpOnly: true, secure: true, sameSite:'strict' }); // Expires in 5 minutes
-        res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+        // res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 60 * 1000 }); // Expires in 1 minute
+        // res.cookie('refresh_token', refreshToken, 
+        //     { httpOnly: true, maxAge: 300 * 1000, httpOnly: true, secure: true, sameSite:'strict' }); // Expires in 5 minutes
+        // res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
         res.status(201).json(newUser);
 
     } catch (err) {
@@ -76,6 +76,87 @@ const createUser = async (req, res) => {
             res.status(400).json({ message: err.message });
         }
     }
+};
+
+const createUserTesting = async (req, res) => {
+    console.log("New company created");
+    const organization = req.body.organisationName;
+    const formattedDbName = organization
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/ /g, "-") // Replace spaces with dashes
+    .replace(/[^a-zA-Z0-9_-]/g, "") // Only allow alphanumeric characters and underscores
+    .split("")
+    .filter((char) => char !== "/")
+    .join("");
+    console.log(formattedDbName);
+    console.log(connectToDatabase(formattedDbName));
+    console.log("Creating the new DB", formattedDbName);
+
+    res.status(200).json({
+    formattedDbName
+    })
+    // const db = connectToDatabase(formattedDbName);
+    // console.log("Created the new DB and connected");
+
+    // try {
+    //     // Create a new collection for users
+    //     const User = db.model('Admin', UserModel.schema);
+    //     // console.log(User);
+    //     const newUser = new User({
+    //         organisationName: req.body.organisationName,
+    //         name: req.body.name,
+    //         email: req.body.email,
+    //         mobileNumber: req.body.mobileNumber,
+    //         password: req.body.password,
+    //         confirmPassword: req.body.confirmPassword,
+    //         role: req.body.role,
+    //         subDomine: formattedDbName
+    //     });
+    //     console.log(newUser);
+    //     await newUser.save();
+    //     console.log("Company created successfully");
+
+    //     // // Close the connection after saving the user
+    //     // db.close();
+    //     // console.log("Company registered and saved successfully");
+    //     // Now, create a new domain
+    //     const domainDb = connectToDatabase('odonine-tenant');
+    //     const domain = domainDb.model('odonine-tenant', domainModel.schema);
+    //     const newDomain = new domain({
+    //         organisationName: req.body.organisationName,
+    //         name: req.body.name,
+    //         email: req.body.email,
+    //         mobileNumber: req.body.mobileNumber,
+    //         password: req.body.password,
+    //         confirmPassword: req.body.confirmPassword,
+    //         role: req.body.role,
+    //         subDomine: formattedDbName
+    //     });
+
+    //     // console.log(newDomain);
+
+    //     await newDomain.save();
+    //     // domainDb.close();
+
+    //     // const accessToken = jwt.sign({ email: email, role: "admin" }, "jwt-access-token-secret-key", { expiresIn: "1m" });
+    //     // const refreshToken = jwt.sign({ email: email, role: "admin" }, "jwt-refresh-token-secret-key", { expiresIn: "5m" });
+
+    //     // res.cookie('access_token', accessToken, { httpOnly: true, maxAge: 60 * 1000 }); // Expires in 1 minute
+    //     // res.cookie('refresh_token', refreshToken, 
+    //     //     { httpOnly: true, maxAge: 300 * 1000, httpOnly: true, secure: true, sameSite:'strict' }); // Expires in 5 minutes
+    //     // res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+
+    //     res.status(201).json(newUser);
+
+    // } catch (err) {
+    //     if (err.code === 11000 && err.keyPattern.subDomine) {
+    //         // res.status(400).json({ message: `The subDomine '${formattedDbName}' is already in use.` });
+    //         res.status(400).json({ message: err });
+    //     } else {
+    //         res.status(400).json({ message: err.message });
+    //     }
+    // }
 };
 
 const companySignIn = async (req, res) => {
@@ -105,4 +186,4 @@ const companySignIn = async (req, res) => {
     }
 };
 
-module.exports = { createUser, companySignIn };
+module.exports = { createUser, companySignIn, createUserTesting };
